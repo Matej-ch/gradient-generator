@@ -1,7 +1,16 @@
 {
   "name": "gradient-generator",
+  "description": "Css gradient generator created with vue.js",
+  "author": "Matej Ch",
   "version": "0.1.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Matej-ch/gradient-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Matej-ch/gradient-generator/issues"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -9,7 +18,9 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "normalize.css": "^8.0.1",
+    "tailwindcss": "^1.8.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -18,7 +29,9 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "sass": "^1.26.11",
+    "sass-loader": "^10.0.2"
   },
   "eslintConfig": {
     "root": true,
@@ -38,5 +51,19 @@
     "> 1%",
     "last 2 versions",
     "not dead"
+  ],
+  "tags": [
+    "vue",
+    "vue.js",
+    "gradient-generator",
+    "gradient",
+    "multi gradient"
+  ],
+  "keywords": [
+    "vue",
+    "vue.js",
+    "gradient-generator",
+    "gradient",
+    "multi gradient"
   ]
 }
