@@ -1,7 +1,7 @@
 <template>
   <div style="background-color: red;width:100%;height: 100%" :style="finalStyle">
 
-      <div class="flex flex-col">
+      <div class="flex flex-col" v-show="overlay">
           <div v-for="(gradient,index) in gradients" :key="index" class="flex flex-row">
               <div>
                   <label class="block text-gray-700 text-sm font-bold mb-2">Gradient</label>
@@ -18,17 +18,30 @@
                       </div>
                   </div>
               </div>
-              <div>
-                  <label class="block text-gray-700 text-sm font-bold mb-2">Turn</label>
-                  <input type="number"
-                         step="0.01"
-                         min="0"
-                         max="1"
-                         v-model="gradient.turns"
-                         class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+              <div class="flex flex-row justify-start" style="align-items: flex-end;">
+                  <div>
+                      <label class="block text-gray-700 text-sm font-bold mb-2">{{gradient.useDeg === true ? 'Degrees' : 'Turns'}}</label>
+                      <input
+                          v-if="gradient.useDeg"
+                          type="number"
+                          :step=1
+                          min=0
+                          :max=360
+                          v-model=" gradient.degrees"
+                          class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                      <input
+                          v-else
+                          type="number"
+                          :step=0.01
+                          min=0
+                          :max=1
+                          v-model="gradient.turns"
+                          class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                  </div>
+                  <div>
+                      <a href="#" @click.prevent="gradient.useDeg = !gradient.useDeg;" class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">{{gradient.useDeg === true ? 'T' : 'D'}}</a>
+                  </div>
               </div>
-
-
           </div>
       </div>
   </div>
@@ -44,19 +57,25 @@ export default {
     components: {},
     data() {
       return {
+          overlay:true,
           gradients: [
               {
                   type: 'linear-gradient',
                   turns: 0,
                   degrees:0,
+                  useDeg: false,
                   stops: [
                       {
-                          'color': '#e66465',
-                          'alpha': 1
+                          color: '#e66465',
+                          alpha: 1,
+                          startPosition: '',
+                          endPosition: '',
                       },
                       {
-                          'color': '#9198e5',
-                          'alpha': 1
+                          color: '#9198e5',
+                          alpha: 1,
+                          startPosition: '',
+                          endPosition: '',
                       }
                   ],
               }
@@ -75,12 +94,19 @@ export default {
 
               colors = colors.slice(0, -1);
 
-              finalGradient.background = `${gradient.type}(${gradient.turns}turn,${colors})`;
+              let positionVar = 'turn';
+              let positionNum = gradient.turns;
+              if(gradient.useDeg) {
+                  positionVar = 'deg';
+                  positionNum = gradient.degrees;
+              }
+
+              finalGradient.background = `${gradient.type}(${positionNum}${positionVar},${colors})`;
           })
 
           return finalGradient;
       }
-    }
+    },
 }
 </script>
 
