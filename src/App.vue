@@ -44,13 +44,29 @@
               </div>
 
               <div class="flex flex-row items-end">
-                  <div v-for="(stop,index) in gradient.stops" class="px-1 flex flex-col max-w-sm" :key="`color-${index}`">
-                      <input type="color" v-model="stop.color">
-                      <input type="number" v-model="stop.alpha"
-                             step="0.01" min="0" max="1"
-                             class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                             style="width: 64px">
+                  <div v-for="(stop,index) in gradient.stops" class="px-1 flex flex-row max-w-sm items-end" :key="`color-${index}`">
+                      <div class="flex flex-col">
+                          <input type="color" v-model="stop.color">
+                          <input type="number" v-model="stop.alpha"
+                                 step="0.01" min="0" max="1"
+                                 class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                 style="width: 64px">
+                      </div>
+                      <div class="flex flex-col">
+                          <input type="number"
+                                 v-model="stop.startPosition"
+                                 step="1" min="0" max="100"
+                                 class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                 style="width: 64px">
+                          <input type="number"
+                                 v-model="stop.endPosition"
+                                 step="1" min="0" max="100"
+                                 class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                 style="width: 64px">
+                      </div>
+
                   </div>
+
                   <div>
                       <button @click="addStop(gradient)" class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">+</button>
                   </div>
@@ -82,14 +98,14 @@ export default {
                       {
                           color: '#e66465',
                           alpha: 1,
-                          startPosition: '',
-                          endPosition: '',
+                          startPosition: 0,
+                          endPosition: null,
                       },
                       {
                           color: '#9198e5',
                           alpha: 1,
-                          startPosition: '',
-                          endPosition: '',
+                          startPosition: 100,
+                          endPosition: null,
                       }
                   ],
               }
@@ -103,7 +119,11 @@ export default {
           this.gradients.forEach(gradient => {
               let colors = '';
               gradient.stops.forEach(stop => {
-                  colors += this.convertToRgbaString(stop.color,stop.alpha) + ',';
+                  if(stop.startPosition !==null) {
+                      colors += this.convertToRgbaString(stop.color,stop.alpha) + `${stop.startPosition}%,`;
+                  } else {
+                      colors += this.convertToRgbaString(stop.color,stop.alpha) + `,`;
+                  }
               });
 
               colors = colors.slice(0, -1);
@@ -126,15 +146,24 @@ export default {
             const newStop = {
                 color: '#ffffff',
                 alpha: 1,
-                startPosition: '',
-                endPosition: '',
+                startPosition: 100,
+                endPosition: null,
             };
+
+            //let stopCount = gradient.stops.length + 1;
+            //let firstPercentage = Math.floor(100 / stopCount);
+            //let test = 0;
             gradient.stops.push(newStop);
+
+            /*gradient.stops.forEach(stop => {
+                stop.startPosition = test;
+                test += firstPercentage;
+                //firstPercentage *= 2;
+            })*/
         }
     }
 }
 </script>
-
 <style>
 @import "~normalize.css";
 @import './assets/styles/main.css';
