@@ -2,7 +2,7 @@
   <div style="background-color: red;width:100%;height: 100%" :style="finalStyle">
 
       <div class="flex flex-col" v-show="overlay">
-          <div v-for="(gradient,index) in gradients" :key="index" class="flex flex-row">
+          <div v-for="(gradient,index) in gradients" :key="index" class="flex flex-row items-end">
               <div>
                   <label class="block text-gray-700 text-sm font-bold mb-2">Gradient</label>
                   <div class="relative">
@@ -70,6 +70,10 @@
                   <div>
                       <button @click="addStop(gradient)" class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">+</button>
                   </div>
+
+                  <div>
+                      <button @click="addGradient" class="block bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded">+</button>
+                  </div>
               </div>
 
           </div>
@@ -114,30 +118,12 @@ export default {
     },
     computed: {
       finalStyle() {
-          let finalGradient = {};
+          let finalGradient = {
+              background: '',
+          };
 
           this.gradients.forEach(gradient => {
-              let colors = '';
-              gradient.stops.forEach(stop => {
-
-                  let startPosition = '';
-                  let endPosition = '';
-                  if(stop.startPosition !== null) {
-                      startPosition = `${stop.startPosition}%`;
-                  }
-
-                  if(stop.endPosition !== null) {
-                      endPosition = `${stop.endPosition}%`;
-                  }
-
-                  if(stop.startPosition !==null) {
-                      colors += this.convertToRgbaString(stop.color,stop.alpha) + `${startPosition} ${endPosition},`;
-                  } else {
-                      colors += this.convertToRgbaString(stop.color,stop.alpha) + `,`;
-                  }
-              });
-
-              colors = colors.slice(0, -1);
+              let colors = this.colors(gradient);
 
               let positionVar = 'turn';
               let positionNum = gradient.turns;
@@ -146,9 +132,10 @@ export default {
                   positionNum = gradient.degrees;
               }
 
-              finalGradient.background = `${gradient.type}(${positionNum}${positionVar},${colors})`;
+              finalGradient.background += `${gradient.type}(${positionNum}${positionVar},${colors}),`;
           })
 
+          finalGradient.background = finalGradient.background.slice(0, -1);
           return finalGradient;
       }
     },
@@ -162,6 +149,56 @@ export default {
             };
 
             gradient.stops.push(newStop);
+        },
+        colors(gradient) {
+            let colors = '';
+
+            gradient.stops.forEach(stop => {
+
+                let startPosition = '';
+                let endPosition = '';
+                if(stop.startPosition !== null) {
+                    startPosition = `${stop.startPosition}%`;
+                }
+
+                if(stop.endPosition !== null) {
+                    endPosition = `${stop.endPosition}%`;
+                }
+
+                if(stop.startPosition !==null) {
+                    colors += this.convertToRgbaString(stop.color,stop.alpha) + `${startPosition} ${endPosition},`;
+                } else {
+                    colors += this.convertToRgbaString(stop.color,stop.alpha) + `,`;
+                }
+            });
+
+            colors = colors.slice(0, -1);
+
+            return colors;
+        },
+        addGradient() {
+            let newGradient = {
+                type: 'linear-gradient',
+                turns: 0,
+                degrees:0,
+                useDeg: false,
+                stops: [
+                    {
+                        color: '#ffffff',
+                        alpha: 1,
+                        startPosition: null,
+                        endPosition: null,
+                    },
+                    {
+                        color: '#000000',
+                        alpha: 1,
+                        startPosition: null,
+                        endPosition: null,
+                    }
+                ],
+            };
+
+            this.gradients.push(newGradient);
         }
     }
 }
