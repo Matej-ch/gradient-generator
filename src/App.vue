@@ -42,6 +42,20 @@
                       <a href="#" @click.prevent="gradient.useDeg = !gradient.useDeg;" class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">{{gradient.useDeg === true ? 'T' : 'D'}}</a>
                   </div>
               </div>
+
+              <div class="flex flex-row items-end">
+                  <div v-for="(stop,index) in gradient.stops" class="px-1 flex flex-col max-w-sm" :key="`color-${index}`">
+                      <input type="color" v-model="stop.color">
+                      <input type="number" v-model="stop.alpha"
+                             step="0.01" min="0" max="1"
+                             class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                             style="width: 64px">
+                  </div>
+                  <div>
+                      <button @click="addStop(gradient)" class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">+</button>
+                  </div>
+              </div>
+
           </div>
       </div>
   </div>
@@ -107,6 +121,17 @@ export default {
           return finalGradient;
       }
     },
+    methods: {
+        addStop(gradient) {
+            const newStop = {
+                color: '#ffffff',
+                alpha: 1,
+                startPosition: '',
+                endPosition: '',
+            };
+            gradient.stops.push(newStop);
+        }
+    }
 }
 </script>
 
