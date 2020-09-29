@@ -7,7 +7,7 @@
                   <label class="block text-gray-700 text-sm font-bold mb-2">Gradient</label>
                   <div class="relative">
                       <select v-model="gradient.type"
-                              class="block appearance-none w-full bg-blue-100 border border-blue-200 text-gray-700 py-1 px-1 pr-8 rounded-sm leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                              class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                           <option value="linear-gradient">Linear</option>
                           <option value="repeating-linear-gradient">Repeating linear</option>
                           <option value="radial-gradient">Radial</option>
@@ -98,13 +98,13 @@ export default {
                       {
                           color: '#e66465',
                           alpha: 1,
-                          startPosition: 0,
+                          startPosition: null,
                           endPosition: null,
                       },
                       {
                           color: '#9198e5',
                           alpha: 1,
-                          startPosition: 100,
+                          startPosition: null,
                           endPosition: null,
                       }
                   ],
@@ -119,8 +119,19 @@ export default {
           this.gradients.forEach(gradient => {
               let colors = '';
               gradient.stops.forEach(stop => {
+
+                  let startPosition = '';
+                  let endPosition = '';
+                  if(stop.startPosition !== null) {
+                      startPosition = `${stop.startPosition}%`;
+                  }
+
+                  if(stop.endPosition !== null) {
+                      endPosition = `${stop.endPosition}%`;
+                  }
+
                   if(stop.startPosition !==null) {
-                      colors += this.convertToRgbaString(stop.color,stop.alpha) + `${stop.startPosition}%,`;
+                      colors += this.convertToRgbaString(stop.color,stop.alpha) + `${startPosition} ${endPosition},`;
                   } else {
                       colors += this.convertToRgbaString(stop.color,stop.alpha) + `,`;
                   }
@@ -146,20 +157,11 @@ export default {
             const newStop = {
                 color: '#ffffff',
                 alpha: 1,
-                startPosition: 100,
+                startPosition: null,
                 endPosition: null,
             };
 
-            //let stopCount = gradient.stops.length + 1;
-            //let firstPercentage = Math.floor(100 / stopCount);
-            //let test = 0;
             gradient.stops.push(newStop);
-
-            /*gradient.stops.forEach(stop => {
-                stop.startPosition = test;
-                test += firstPercentage;
-                //firstPercentage *= 2;
-            })*/
         }
     }
 }
