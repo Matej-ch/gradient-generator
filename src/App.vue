@@ -68,11 +68,28 @@
                   </div>
 
                   <div>
-                      <button @click="addStop(gradient)" class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">+</button>
+                      <button @click="addStop(gradient)" class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded" title="Add next color stop">+</button>
                   </div>
 
                   <div>
-                      <button @click="addGradient" class="block bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded">+</button>
+                      <button @click="addGradient"
+                              v-show="gradients.length - 1 === index"
+                              class="block bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded"
+                              title="Add next gradient">+</button>
+                      <button
+                          @click="removeGradient(index)"
+                          v-show="gradients.length - 1 !== index"
+                          class="block bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded"
+                          title="Remove next gradient">x</button>
+                  </div>
+
+                  <div>
+                      <button @click="moveGradient('up')"
+                              v-show="index !== 0"
+                              class="block bg-orange-500 hover:bg-orange-700 text-white font-bold py-1 px-4 rounded">▲</button>
+                      <button @click="moveGradient('down')"
+                              v-show="(gradients.length > 1) && (gradients.length - 1 !== index)"
+                              class="block bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-4 rounded">▼</button>
                   </div>
               </div>
 
@@ -199,6 +216,12 @@ export default {
             };
 
             this.gradients.push(newGradient);
+        },
+        removeGradient(index) {
+            this.gradients.splice(index,1);
+        },
+        moveGradient(direction) {
+            console.log(direction);
         }
     }
 }
