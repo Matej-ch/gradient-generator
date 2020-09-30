@@ -84,12 +84,14 @@
                   </div>
 
                   <div>
-                      <button @click="moveGradient('up')"
+                      <button @click="moveGradient(index,'up')"
                               v-show="index !== 0"
-                              class="block bg-orange-500 hover:bg-orange-700 text-white font-bold py-1 px-4 rounded">▲</button>
-                      <button @click="moveGradient('down')"
+                              class="block bg-orange-500 hover:bg-orange-700 text-white font-bold py-1 px-4 rounded"
+                              title="Move up">▲</button>
+                      <button @click="moveGradient(index,'down')"
                               v-show="(gradients.length > 1) && (gradients.length - 1 !== index)"
-                              class="block bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-4 rounded">▼</button>
+                              class="block bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-4 rounded"
+                              title="Move down">▼</button>
                   </div>
               </div>
 
@@ -220,8 +222,14 @@ export default {
         removeGradient(index) {
             this.gradients.splice(index,1);
         },
-        moveGradient(direction) {
-            console.log(direction);
+        moveGradient(index,direction) {
+            if(direction === 'up') {
+                let rows = [this.gradients[index], this.gradients[index - 1]];
+                this.gradients.splice(index-1, 2, rows[0], rows[1] );
+            } else {
+                let rows = [this.gradients[index], this.gradients[index + 1]];
+                this.gradients.splice(index, 2, rows[1], rows[0] );
+            }
         }
     }
 }
