@@ -57,19 +57,23 @@
                           <div class="flex flex-col">
                               <input type="number"
                                      v-model="stop.startPosition"
-                                     step="1" min="0" max="100"
+                                     step="1" min="0"
+                                     :max="stop.useDeg ? 100 : windowWidth"
                                      class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                      style="width: 64px">
                               <input type="number"
                                      v-model="stop.endPosition"
-                                     step="1" min="0" max="100"
+                                     step="1" min="0"
+                                     :max="stop.useDeg ? 100 : windowWidth"
                                      class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                      style="width: 64px">
                           </div>
                           <div class="flex flex-col">
                               <a href="#"
                                  @click.prevent="stop.useDeg = !stop.useDeg;"
-                                 class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">{{stop.useDeg === true ? '%' : 'px'}}</a>
+                                 class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">
+                                  {{stop.useDeg === true ? '%' : 'px'}}
+                              </a>
                           </div>
                       </div>
 
@@ -143,6 +147,7 @@ export default {
                   ],
               }
           ],
+          windowWidth:window.innerWidth,
       }
     },
     computed: {
