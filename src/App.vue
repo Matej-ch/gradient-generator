@@ -52,17 +52,25 @@
                                  class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                  style="width: 64px">
                       </div>
-                      <div class="flex flex-col">
-                          <input type="number"
-                                 v-model="stop.startPosition"
-                                 step="1" min="0" max="100"
-                                 class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                 style="width: 64px">
-                          <input type="number"
-                                 v-model="stop.endPosition"
-                                 step="1" min="0" max="100"
-                                 class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                 style="width: 64px">
+
+                      <div class="flex flex-row">
+                          <div class="flex flex-col">
+                              <input type="number"
+                                     v-model="stop.startPosition"
+                                     step="1" min="0" max="100"
+                                     class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                     style="width: 64px">
+                              <input type="number"
+                                     v-model="stop.endPosition"
+                                     step="1" min="0" max="100"
+                                     class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                     style="width: 64px">
+                          </div>
+                          <div class="flex flex-col">
+                              <a href="#"
+                                 @click.prevent="stop.useDeg = !stop.useDeg;"
+                                 class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">{{stop.useDeg === true ? '%' : 'px'}}</a>
+                          </div>
                       </div>
 
                   </div>
@@ -123,12 +131,14 @@ export default {
                           alpha: 1,
                           startPosition: null,
                           endPosition: null,
+                          useDeg: true,
                       },
                       {
                           color: '#9198e5',
                           alpha: 1,
                           startPosition: null,
                           endPosition: null,
+                          useDeg: true,
                       }
                   ],
               }
@@ -176,12 +186,17 @@ export default {
 
                 let startPosition = '';
                 let endPosition = '';
+                let unit = 'px';
+                if(stop.useDeg) {
+                    unit = '%';
+                }
+
                 if(stop.startPosition !== null) {
-                    startPosition = `${stop.startPosition}%`;
+                    startPosition = `${stop.startPosition}${unit}`;
                 }
 
                 if(stop.endPosition !== null) {
-                    endPosition = `${stop.endPosition}%`;
+                    endPosition = `${stop.endPosition}${unit}`;
                 }
 
                 if(stop.startPosition !==null) {
