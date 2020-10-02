@@ -241,6 +241,7 @@ export default {
                 alpha: 1,
                 startPosition: null,
                 endPosition: null,
+                useDeg: true,
             };
 
             gradient.stops.push(newStop);
