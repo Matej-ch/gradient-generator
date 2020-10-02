@@ -18,7 +18,55 @@
                       </div>
                   </div>
               </div>
-              <div class="flex flex-row justify-start" style="align-items: flex-end;">
+
+              <div v-if="gradient.type === 'radial-gradient'" class="flex flex-col justify-start" style="align-items: flex-end;">
+                  <div class="flex flex-col">
+                      <label class="block text-gray-700 text-sm font-bold mb-2">Size</label>
+                      <div class="flex flex-row">
+                          <input type="number"
+                                 v-model="gradient.sizeX"
+                                 step="1" min="0"
+                                 :max=100
+                                 class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                 style="width: 64px">
+                          <input type="number"
+                                 v-model="gradient.sizeY"
+                                 step="1" min="0"
+                                 :max=100
+                                 class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                 style="width: 64px">
+                          <a href="#"
+                             @click.prevent="gradient.sizeUnit === '%' ? gradient.sizeUnit = 'px' : gradient.sizeUnit = '%'"
+                             class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">
+                              {{gradient.sizeUnit}}
+                          </a>
+                      </div>
+                  </div>
+                  <div class="flex flex-col">
+                      <label class="block text-gray-700 text-sm font-bold mb-2">Position</label>
+                      <div class="flex flex-row">
+                          <input type="number"
+                                 v-model="gradient.positionX"
+                                 step="1" min="0"
+                                 :max=100
+                                 class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                 style="width: 64px">
+                          <input type="number"
+                                 v-model="gradient.positionY"
+                                 step="1" min="0"
+                                 :max=100
+                                 class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                 style="width: 64px">
+                          <a href="#"
+                             @click.prevent="gradient.positionUnit === '%' ? gradient.positionUnit = 'px' : gradient.positionUnit = '%'"
+                             class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">
+                              {{gradient.positionUnit}}
+                          </a>
+                      </div>
+                  </div>
+              </div>
+
+              <div v-else class="flex flex-row justify-start" style="align-items: flex-end;">
                   <div>
                       <label class="block text-gray-700 text-sm font-bold mb-2">{{gradient.useDeg === true ? 'Degrees' : 'Turns'}}</label>
                       <input
@@ -27,7 +75,7 @@
                           :step=1
                           min=0
                           :max=360
-                          v-model=" gradient.degrees"
+                          v-model="gradient.degrees"
                           class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                       <input
                           v-else
@@ -129,6 +177,12 @@ export default {
                   turns: 0,
                   degrees:0,
                   useDeg: false,
+                  positionX: 50,
+                  positionY: 50,
+                  sizeX: 20,
+                  sizeY: 50,
+                  positionUnit: '%',
+                  sizeUnit: '%',
                   stops: [
                       {
                           color: '#e66465',
@@ -159,14 +213,21 @@ export default {
           this.gradients.forEach(gradient => {
               let colors = this.colors(gradient);
 
-              let positionVar = 'turn';
-              let positionNum = gradient.turns;
-              if(gradient.useDeg) {
-                  positionVar = 'deg';
-                  positionNum = gradient.degrees;
-              }
+              if(gradient.type === 'radial-gradient') {
+                  let size = `${gradient.sizeX}${gradient.sizeUnit} ${gradient.sizeY}${gradient.sizeUnit}`;
+                  let position = `${gradient.positionX}${gradient.positionUnit} ${gradient.positionY}${gradient.positionUnit}`;
 
-              finalGradient.background += `${gradient.type}(${positionNum}${positionVar},${colors}),`;
+                  finalGradient.background += `${gradient.type}(${size} at ${position},${colors}),`;
+              } else {
+                  let positionVar = 'turn';
+                  let positionNum = gradient.turns;
+                  if(gradient.useDeg) {
+                      positionVar = 'deg';
+                      positionNum = gradient.degrees;
+                  }
+
+                  finalGradient.background += `${gradient.type}(${positionNum}${positionVar},${colors}),`;
+              }
           })
 
           finalGradient.background = finalGradient.background.slice(0, -1);
@@ -221,18 +282,26 @@ export default {
                 turns: 0,
                 degrees:0,
                 useDeg: false,
+                positionX: 50,
+                positionY: 50,
+                sizeX: 20,
+                sizeY: 50,
+                positionUnit: '%',
+                sizeUnit: '%',
                 stops: [
                     {
                         color: '#ffffff',
                         alpha: 1,
                         startPosition: null,
                         endPosition: null,
+                        useDeg: true,
                     },
                     {
                         color: '#000000',
                         alpha: 1,
                         startPosition: null,
                         endPosition: null,
+                        useDeg: true,
                     }
                 ],
             };
