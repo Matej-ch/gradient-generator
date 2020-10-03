@@ -130,38 +130,48 @@
                     <div>
                         <button @click="addStop(gradient)" class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded" title="Add next color stop">+</button>
                     </div>
+                </div>
 
-                    <div>
-                        <button @click="addGradient"
-                                v-show="gradients.length - 1 === index"
-                                class="block bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded"
-                                title="Add next gradient">+</button>
-                        <button
-                            @click="removeGradient(index)"
-                            v-show="gradients.length - 1 !== index"
-                            class="block bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded"
-                            title="Remove next gradient">x</button>
-                    </div>
+                <div class="ml-auto flex flex-row">
 
-                    <div>
-                        <button @click="moveGradient(index,'up')"
-                                v-show="index !== 0"
-                                class="block bg-orange-500 hover:bg-orange-700 text-white font-bold py-1 px-4 rounded"
-                                title="Move up">▲</button>
-                        <button @click="moveGradient(index,'down')"
-                                v-show="(gradients.length > 1) && (gradients.length - 1 !== index)"
-                                class="block bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-4 rounded"
-                                title="Move down">▼</button>
-                    </div>
+                    <button @click="moveGradient(index,'up')"
+                            v-show="index !== 0"
+                            class="block bg-orange-500 hover:bg-orange-700 text-white font-bold py-1 px-4 rounded mr-1"
+                            title="Move up">▲</button>
+
+                    <button @click="moveGradient(index,'down')"
+                            v-show="(gradients.length > 1) && (gradients.length - 1 !== index)"
+                            class="block bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-4 rounded mr-1"
+                            title="Move down">▼</button>
+
+                    <button
+                        @click="removeGradient(index)"
+                        v-show="index !== 0"
+                        class="block bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                        title="Remove gradient">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5"
+                             stroke="#f3f5f7" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <line x1="4" y1="7" x2="20" y2="7" />
+                            <line x1="10" y1="11" x2="10" y2="17" />
+                            <line x1="14" y1="11" x2="14" y2="17" />
+                            <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                            <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                        </svg>
+                    </button>
                 </div>
 
             </div>
+
+            <button @click="addGradient"
+                    class="block bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded absolute top-0 right-0 mr-1 mt-1"
+                    title="Add next gradient">Add gradient</button>
         </div>
 
         <div class="h-screen relative" :style="finalStyle">
             <a href="#" @click.prevent="showOverlay = !showOverlay" class="absolute right-0">
-                <svg v-show="showOverlay" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrows-maximize" width="36"
-                     height="36" viewBox="0 0 24 24" stroke-width="1.5" stroke="black" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <svg v-show="showOverlay" xmlns="http://www.w3.org/2000/svg" width="36"
+                     height="36" viewBox="0 0 24 24" stroke-width="1.5" stroke="#212121" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <polyline points="16 4 20 4 20 8" />
                     <line x1="14" y1="10" x2="20" y2="4" />
@@ -173,7 +183,7 @@
                     <line x1="4" y1="4" x2="10" y2="10" />
                 </svg>
 
-                <svg v-show="!showOverlay" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrows-minimize"
+                <svg v-show="!showOverlay" xmlns="http://www.w3.org/2000/svg"
                      width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#607D8B" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <polyline points="5 9 9 9 9 5" />
