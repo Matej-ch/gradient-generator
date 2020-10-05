@@ -169,33 +169,55 @@
         </div>
 
         <div class="h-screen relative" :style="finalStyle">
-            <a href="#" @click.prevent="showOverlay = !showOverlay" class="absolute right-0">
+            <a href="#" @click.prevent="showOverlay = !showOverlay" class="absolute right-0 opacity-50">
                 <svg v-show="showOverlay" xmlns="http://www.w3.org/2000/svg" width="36"
                      height="36" viewBox="0 0 24 24" stroke-width="1.5" stroke="#212121" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <polyline points="16 4 20 4 20 8" />
-                    <line x1="14" y1="10" x2="20" y2="4" />
-                    <polyline points="8 20 4 20 4 16" />
-                    <line x1="4" y1="20" x2="10" y2="14" />
-                    <polyline points="16 20 20 20 20 16" />
-                    <line x1="14" y1="14" x2="20" y2="20" />
-                    <polyline points="8 4 4 4 4 8" />
-                    <line x1="4" y1="4" x2="10" y2="10" />
+                    <polyline points="16 4 20 4 20 8" /><line x1="14" y1="10" x2="20" y2="4" />
+                    <polyline points="8 20 4 20 4 16" /><line x1="4" y1="20" x2="10" y2="14" />
+                    <polyline points="16 20 20 20 20 16" /><line x1="14" y1="14" x2="20" y2="20" />
+                    <polyline points="8 4 4 4 4 8" /><line x1="4" y1="4" x2="10" y2="10" />
                 </svg>
 
                 <svg v-show="!showOverlay" xmlns="http://www.w3.org/2000/svg"
                      width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#607D8B" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <polyline points="5 9 9 9 9 5" />
-                    <line x1="3" y1="3" x2="9" y2="9" />
-                    <polyline points="5 15 9 15 9 19" />
-                    <line x1="3" y1="21" x2="9" y2="15" />
-                    <polyline points="19 9 15 9 15 5" />
-                    <line x1="15" y1="9" x2="21" y2="3" />
-                    <polyline points="19 15 15 15 15 19" />
-                    <line x1="15" y1="15" x2="21" y2="21" />
+                    <polyline points="5 9 9 9 9 5" /><line x1="3" y1="3" x2="9" y2="9" />
+                    <polyline points="5 15 9 15 9 19" /><line x1="3" y1="21" x2="9" y2="15" />
+                    <polyline points="19 9 15 9 15 5" /><line x1="15" y1="9" x2="21" y2="3" />
+                    <polyline points="19 15 15 15 15 19" /><line x1="15" y1="15" x2="21" y2="21" />
                 </svg>
             </a>
+
+            <a href="#" class="opacity-75 absolute right-0 bottom-0"  @click.prevent="showCode = !showCode">
+                <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" stroke-width="1.5" stroke="#607D8B" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                    <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                    <path d="M10 13l-1 2l1 2" />
+                    <path d="M14 13l1 2l-1 2" />
+                </svg>
+            </a>
+
+            <div v-show="showCode" class="absolute inset-x-auto bottom-0 bg-gray-300 rounded right-0 left-0 overflow-auto m-auto w-1/3 h-24">
+                <a href="#"
+                   @click.prevent="copyStyle"
+                   ref="copyBtn">
+                    <svg v-if="!isCopied" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#607D8B" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" />
+                        <rect x="9" y="3" width="6" height="4" rx="2" />
+                    </svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="#607D8B" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M9 5H7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2V7a2 2 0 0 0 -2 -2h-2" />
+                        <rect x="9" y="3" width="6" height="4" rx="2" />
+                        <path d="M9 14l2 2l4 -4" />
+                    </svg>
+
+                </a>
+                <pre v-show="showCode" class="py-2 px-2 w-full text-xs whitespace-pre-wrap" ref="textToCopy">.gradient {{finalStyle | convertToCss}}</pre>
+            </div>
 
         </div>
     </div>
@@ -212,6 +234,8 @@ export default {
     data() {
       return {
           showOverlay:true,
+          showCode: false,
+          isCopied: false,
           gradients: [
               {
                   type: 'linear-gradient',
@@ -361,6 +385,22 @@ export default {
                 let rows = [this.gradients[index], this.gradients[index + 1]];
                 this.gradients.splice(index, 2, rows[1], rows[0] );
             }
+        },
+        copyStyle() {
+            const selection = window.getSelection();
+            const range = document.createRange();
+            let node = this.$refs.textToCopy;
+            range.selectNodeContents(node);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.execCommand('copy');
+            selection.removeAllRanges();
+
+            this.isCopied = true;
+
+            setTimeout(() => {
+                this.isCopied = false;
+            }, 1200);
         }
     }
 }
