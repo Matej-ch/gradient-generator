@@ -168,8 +168,8 @@
                     title="Add next gradient">Add gradient</button>
         </div>
 
-        <div class="h-screen relative" :style="finalStyle">
-            <a href="#" @click.prevent="showOverlay = !showOverlay" class="absolute right-0 opacity-50">
+        <div class="h-screen relative" :style="finalStyle" ref="gradientDiv" id="gradientDiv">
+            <a href="#" @click.prevent="showOverlay = !showOverlay" class="absolute right-0 opacity-50" title="Show / Hide overlay" v-if="!createScreenshot" data-html2canvas-ignore>
                 <svg v-show="showOverlay" xmlns="http://www.w3.org/2000/svg" width="36"
                      height="36" viewBox="0 0 24 24" stroke-width="1.5" stroke="#212121" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -189,7 +189,7 @@
                 </svg>
             </a>
 
-            <a href="#" class="opacity-75 absolute right-0 bottom-0"  @click.prevent="showCode = !showCode">
+            <a href="#" class="opacity-75 absolute right-0 bottom-0"  @click.prevent="showCode = !showCode" title="Show code"  v-if="!createScreenshot" data-html2canvas-ignore>
                 <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" stroke-width="1.5" stroke="#607D8B" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <path d="M14 3v4a1 1 0 0 0 1 1h4" />
@@ -214,10 +214,19 @@
                         <rect x="9" y="3" width="6" height="4" rx="2" />
                         <path d="M9 14l2 2l4 -4" />
                     </svg>
-
                 </a>
                 <pre v-show="showCode" class="py-2 px-2 w-full text-xs whitespace-pre-wrap" ref="textToCopy">.gradient {{finalStyle | convertToCss}}</pre>
             </div>
+
+            <a href="#" @click.prevent="createImage" class="opacity-75 absolute left-0 bottom-0" title="Create Image" v-if="!createScreenshot" data-html2canvas-ignore>
+                <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" stroke-width="1.5" stroke="#607D8B" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <line x1="15" y1="8" x2="15.01" y2="8" />
+                    <rect x="4" y="4" width="16" height="16" rx="3" />
+                    <path d="M4 15l4 -4a3 5 0 0 1 3 0l5 5" />
+                    <path d="M14 14l1 -1a3 5 0 0 1 3 0l2 2" />
+                </svg>
+            </a>
 
         </div>
     </div>
@@ -226,6 +235,7 @@
 <script>
 
 import {hexToRgbaMixin} from "@/mixins/hexToRgbaMixin";
+import html2canvas from "html2canvas";
 
 export default {
     name: 'App',
@@ -236,6 +246,7 @@ export default {
           showOverlay:true,
           showCode: false,
           isCopied: false,
+          createScreenshot: false,
           gradients: [
               {
                   type: 'linear-gradient',
@@ -401,6 +412,30 @@ export default {
             setTimeout(() => {
                 this.isCopied = false;
             }, 1200);
+        },
+        createImage() {
+            this.showOverlay = false;
+            this.createScreenshot = true;
+
+            html2canvas(document.getElementById(this.$refs.gradientDiv.getAttribute('id')))
+                .then(canvas => {
+                    document.body.appendChild(canvas)
+                    canvas.style.cssText = 'position: fixed;top: 0;left: 0;opacity: 1;transform: scale(0.8); z-index: 99999999;transition: transform 0.3s cubic-bezier(0.42, 0, 0.58, 1) 0s, opacity 0.3s cubic-bezier(0.42, 0, 0.58, 1) 0s, transform 0.3s cubic-bezier(0.42, 0, 0.58, 1) 0s;box-shadow: rgba(0, 0, 0, 0.3) 6px 5px 12px 4px;';
+                    canvas.id = 'canvas'
+                });
+
+
+            setTimeout(() => {
+                this.showOverlay = true;
+                this.createScreenshot = false;
+            }, 3000);
+
+            setTimeout(() => {
+                let canvas = document.getElementById('canvas');
+                let dataURL = canvas.toDataURL('image/png');
+                window.open(dataURL,'GradientWindow');
+                canvas.remove();
+            }, 500);
         }
     }
 }
