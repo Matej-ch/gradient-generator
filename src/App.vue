@@ -2,6 +2,10 @@
     <div class="grid " :class="showOverlay === true ? 'grid-cols-2' : 'grid-cols-1' ">
 
         <div class="flex flex-col bg-gray-300 relative divide-y divide-gray-400" v-show="showOverlay">
+            <div class="p-2"><button @click="addGradient"
+                                      class="block bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded mr-1 mt-1"
+                                      title="Add next gradient">Add gradient</button>
+            </div>
             <div v-for="(gradient,index) in gradients" :key="index" class="flex flex-row flex-wrap items-end py-2 px-1">
                 <div>
                     <label class="block text-gray-700 text-sm font-bold mb-2">Gradient</label>
@@ -124,7 +128,6 @@
                                 </a>
                             </div>
                         </div>
-
                     </div>
 
                     <div>
@@ -135,19 +138,19 @@
                 <div class="ml-auto flex flex-row">
 
                     <button @click="moveGradient(index,'up')"
-                            v-show="index !== 0"
-                            class="block bg-orange-500 hover:bg-orange-700 text-white font-bold py-1 px-4 rounded mr-1"
+                            class="block text-white font-bold py-1 px-4 rounded mr-1"
+                            :class="{'bg-gray-500 pointer-events-none': index === 0, 'bg-orange-500 hover:bg-orange-700': index !== 0}"
                             title="Move up">▲</button>
 
                     <button @click="moveGradient(index,'down')"
-                            v-show="(gradients.length > 1) && (gradients.length - 1 !== index)"
-                            class="block bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-4 rounded mr-1"
+                            class="block text-white font-bold py-1 px-4 rounded mr-1"
+                            :class="{'bg-gray-500 pointer-events-none': (gradients.length <= 1) || (gradients.length - 1 === index), 'bg-yellow-500 hover:bg-yellow-700': (gradients.length > 1) && (gradients.length - 1 !== index)}"
                             title="Move down">▼</button>
 
                     <button
                         @click="removeGradient(index)"
-                        v-show="index !== 0"
-                        class="block bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                        class="block text-white font-bold py-1 px-2 rounded"
+                        :class="{'pointer-events-none bg-gray-500': index === 0, 'bg-red-500 hover:bg-red-700': index !== 0 }"
                         title="Remove gradient">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5"
                              stroke="#f3f5f7" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -160,12 +163,7 @@
                         </svg>
                     </button>
                 </div>
-
             </div>
-
-            <button @click="addGradient"
-                    class="block bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded absolute top-0 right-0 mr-1 mt-1"
-                    title="Add next gradient">Add gradient</button>
         </div>
 
         <div class="h-screen relative" :style="finalStyle" ref="gradientDiv" id="gradientDiv">
