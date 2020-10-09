@@ -16,6 +16,7 @@
                             <option value="repeating-linear-gradient">Repeating linear</option>
                             <option value="radial-gradient">Radial</option>
                             <option value="repeating-radial-gradient">Repeating radial</option>
+                            <option value="conic-gradient">Conic (chrome only)</option>
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                             <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
@@ -23,8 +24,9 @@
                     </div>
                 </div>
 
-                <div v-if="gradient.type === 'radial-gradient'|| gradient.type === 'repeating-radial-gradient'" class="flex flex-col justify-start" style="align-items: flex-end;">
-                    <div class="flex flex-col">
+                <div v-if="gradient.type === 'radial-gradient'|| gradient.type === 'repeating-radial-gradient' || gradient.type === 'conic-gradient'" class="flex flex-col justify-start" style="align-items: flex-end;">
+
+                    <div class="flex flex-col" v-if="gradient.type === 'radial-gradient'|| gradient.type === 'repeating-radial-gradient'">
                         <label class="block text-gray-700 text-sm font-bold mb-2">Size</label>
                         <div class="flex flex-row">
                             <input type="number"
@@ -46,7 +48,8 @@
                             </a>
                         </div>
                     </div>
-                    <div class="flex flex-col">
+
+                    <div class="flex flex-col" v-if="gradient.type === 'radial-gradient'|| gradient.type === 'repeating-radial-gradient' || gradient.type === 'conic-gradient'">
                         <label class="block text-gray-700 text-sm font-bold mb-2">Position</label>
                         <div class="flex flex-row">
                             <input type="number"
@@ -68,6 +71,7 @@
                             </a>
                         </div>
                     </div>
+
                 </div>
 
                 <div v-else class="flex flex-row justify-start" style="align-items: flex-end;">
@@ -110,13 +114,13 @@
                                 <input type="number"
                                        v-model="stop.startPosition"
                                        step="1" min="0"
-                                       :max="stop.useDeg ? 100 : windowWidth"
+                                       :max="stop.useDeg ? 100 : (gradient.type === 'conic-gradient' ? 360 : windowWidth)"
                                        class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                        style="width: 64px">
                                 <input type="number"
                                        v-model="stop.endPosition"
                                        step="1" min="0"
-                                       :max="stop.useDeg ? 100 : windowWidth"
+                                       :max="stop.useDeg ? 100 : (gradient.type === 'conic-gradient' ? 360 : windowWidth)"
                                        class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                        style="width: 64px">
                             </div>
@@ -124,7 +128,7 @@
                                 <a href="#"
                                    @click.prevent="stop.useDeg = !stop.useDeg;"
                                    class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">
-                                    {{stop.useDeg === true ? '%' : 'px'}}
+                                    {{stop.useDeg === true ? '%' :  (gradient.type === 'conic-gradient' ? 'D' : 'px')}}
                                 </a>
                             </div>
                         </div>
@@ -287,18 +291,23 @@ export default {
           this.gradients.forEach(gradient => {
               let colors = this.colors(gradient);
 
-              if(gradient.type === 'radial-gradient' || gradient.type === 'repeating-radial-gradient') {
+              let positionVar = 'turn';
+              let positionNum = gradient.turns;
+              if(gradient.useDeg) {
+                  positionVar = 'deg';
+                  positionNum = gradient.degrees;
+              }
+
+              if(gradient.type === 'conic-gradient') {
+                  let position = `${gradient.positionX}${gradient.positionUnit} ${gradient.positionY}${gradient.positionUnit}`;
+                  finalGradient.background += `${gradient.type}(from ${positionNum}${positionVar} at ${position},${colors}),`;
+
+              } else if(gradient.type === 'radial-gradient' || gradient.type === 'repeating-radial-gradient') {
                   let size = `${gradient.sizeX}${gradient.sizeUnit} ${gradient.sizeY}${gradient.sizeUnit}`;
                   let position = `${gradient.positionX}${gradient.positionUnit} ${gradient.positionY}${gradient.positionUnit}`;
 
                   finalGradient.background += `${gradient.type}(${size} at ${position},${colors}),`;
               } else {
-                  let positionVar = 'turn';
-                  let positionNum = gradient.turns;
-                  if(gradient.useDeg) {
-                      positionVar = 'deg';
-                      positionNum = gradient.degrees;
-                  }
 
                   finalGradient.background += `${gradient.type}(${positionNum}${positionVar},${colors}),`;
               }
@@ -330,6 +339,10 @@ export default {
                 let unit = 'px';
                 if(stop.useDeg) {
                     unit = '%';
+                }
+
+                if(gradient.type === 'conic-gradient' && !stop.useDeg) {
+                    unit = 'deg';
                 }
 
                 if(stop.startPosition !== null) {
