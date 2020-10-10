@@ -1,13 +1,13 @@
 <template>
     <div class="grid " :class="showOverlay === true ? 'grid-cols-2' : 'grid-cols-1' ">
 
-        <div class="flex flex-col bg-gray-300 relative divide-y divide-gray-400" v-show="showOverlay">
+        <div class="flex flex-col bg-gray-300 relative divide-y divide-gray-400 overflow-y-scroll h-screen" v-show="showOverlay">
             <div class="p-2"><button @click="addGradient"
                                       class="block bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded mr-1 mt-1"
                                       title="Add next gradient">Add gradient</button>
             </div>
-            <div v-for="(gradient,index) in gradients" :key="index" class="flex flex-row flex-wrap items-end py-2 px-1">
-                <div>
+            <div v-for="(gradient,index) in gradients" :key="index" class="flex flex-row flex-wrap items-end py-2 px-1 relative">
+                <div class="p-1">
                     <label class="block text-gray-700 text-sm font-bold mb-2">Gradient</label>
                     <div class="relative">
                         <select v-model="gradient.type"
@@ -24,11 +24,11 @@
                     </div>
                 </div>
 
-                <div v-if="gradient.type === 'radial-gradient'|| gradient.type === 'repeating-radial-gradient' || gradient.type === 'conic-gradient'" class="flex flex-col justify-start" style="align-items: flex-end;">
+                <div v-if="gradient.type === 'radial-gradient'|| gradient.type === 'repeating-radial-gradient' || gradient.type === 'conic-gradient'" class="flex flex-col justify-start p-1" style="align-items: flex-end;">
 
                     <div class="flex flex-col" v-if="gradient.type === 'radial-gradient'|| gradient.type === 'repeating-radial-gradient'">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Size</label>
-                        <div class="flex flex-row">
+                        <div class="flex flex-row items-center">
+                            <label class="block text-gray-700 text-sm font-bold">Size</label>
                             <input type="number"
                                    v-model="gradient.sizeX"
                                    step="1" min="0"
@@ -43,15 +43,15 @@
                                    style="width: 64px">
                             <a href="#"
                                @click.prevent="gradient.sizeUnit === '%' ? gradient.sizeUnit = 'px' : gradient.sizeUnit = '%'"
-                               class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">
+                               class="block bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-4 rounded">
                                 {{gradient.sizeUnit}}
                             </a>
                         </div>
                     </div>
 
                     <div class="flex flex-col" v-if="gradient.type === 'radial-gradient'|| gradient.type === 'repeating-radial-gradient' || gradient.type === 'conic-gradient'">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Position</label>
-                        <div class="flex flex-row">
+                        <div class="flex flex-row items-center">
+                            <label class="block text-gray-700 text-sm font-bold">Position</label>
                             <input type="number"
                                    v-model="gradient.positionX"
                                    step="1" min="0"
@@ -66,7 +66,7 @@
                                    style="width: 64px">
                             <a href="#"
                                @click.prevent="gradient.positionUnit === '%' ? gradient.positionUnit = 'px' : gradient.positionUnit = '%'"
-                               class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">
+                               class="block bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-4 rounded">
                                 {{gradient.positionUnit}}
                             </a>
                         </div>
@@ -74,72 +74,78 @@
 
                 </div>
 
-                <div v-else class="flex flex-row justify-start" style="align-items: flex-end;">
-                    <div>
+                <div v-else class="flex flex-row justify-start p-1" style="align-items: flex-end;">
+                    <div style="max-width: 100px">
                         <label class="block text-gray-700 text-sm font-bold mb-2">{{gradient.useDeg === true ? 'Degrees' : 'Turns'}}</label>
                         <input
-                            v-if="gradient.useDeg"
                             type="number"
-                            :step=1
+                            :step="gradient.turns ? 0.01 : 1"
                             min=0
-                            :max=360
-                            v-model="gradient.degrees"
-                            class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                        <input
-                            v-else
-                            type="number"
-                            :step=0.01
-                            min=0
-                            :max=1
+                            :max="gradient.turns ? 1 : 360"
                             v-model="gradient.turns"
                             class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                     </div>
                     <div>
-                        <a href="#" @click.prevent="gradient.useDeg = !gradient.useDeg;" class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">{{gradient.useDeg === true ? 'T' : 'D'}}</a>
+                        <a href="#" @click.prevent="gradient.useDeg = !gradient.useDeg;" class="block bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-4 rounded">{{gradient.useDeg === true ? 'T' : 'D'}}</a>
                     </div>
                 </div>
 
-                <div class="flex flex-row items-end flex-wrap">
-                    <div v-for="(stop,index) in gradient.stops" class="px-1 flex flex-row max-w-sm items-end" :key="`color-${index}`">
+                <div class="flex flex-row items-end flex-wrap pt-2">
+                    <div v-for="(stop,index) in gradient.stops" class="p-1 flex flex-row max-w-sm items-end" :key="`color-${index}`">
                         <div class="flex flex-col">
-                            <input type="color" v-model="stop.color">
-                            <input type="number" v-model="stop.alpha"
-                                   step="0.01" min="0" max="1"
-                                   class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                   style="width: 64px">
+                            <div>
+                                <label title="Color" class="font-bold text-gray-600">C: </label>
+                                <input type="color" v-model="stop.color">
+                            </div>
+
+                            <div>
+                                <label title="Alpha" class="font-bold text-gray-600">A: </label>
+                                <input type="number" v-model="stop.alpha"
+                                       step="0.01" min="0" max="1"
+                                       class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                       style="width: 64px">
+                            </div>
                         </div>
 
                         <div class="flex flex-row">
                             <div class="flex flex-col">
-                                <input type="number"
-                                       v-model="stop.startPosition"
-                                       step="1" min="0"
-                                       :max="stop.useDeg ? 100 : (gradient.type === 'conic-gradient' ? 360 : windowWidth)"
-                                       class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                       style="width: 64px">
-                                <input type="number"
-                                       v-model="stop.endPosition"
-                                       step="1" min="0"
-                                       :max="stop.useDeg ? 100 : (gradient.type === 'conic-gradient' ? 360 : windowWidth)"
-                                       class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                       style="width: 64px">
+                                <div class="pl-1">
+                                    <label title="Start position" class="font-bold text-gray-600">Sp: </label>
+                                    <input type="number"
+                                           v-model="stop.startPosition"
+                                           step="1" min="0"
+                                           :max="stop.useDeg ? 100 : (gradient.type === 'conic-gradient' ? 360 : windowWidth)"
+                                           class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                           style="width: 64px">
+                                </div>
+
+                                <div class="pl-1">
+                                    <label title="End position" class="font-bold text-gray-600">Ep: </label>
+                                    <input type="number"
+                                           v-model="stop.endPosition"
+                                           step="1" min="0"
+                                           :max="stop.useDeg ? 100 : (gradient.type === 'conic-gradient' ? 360 : windowWidth)"
+                                           class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                           style="width: 64px">
+                                </div>
+
                             </div>
-                            <div class="flex flex-col">
+                            <div class="flex flex-col self-end">
                                 <a href="#"
                                    @click.prevent="stop.useDeg = !stop.useDeg;"
-                                   class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">
+                                   class="block bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-4 rounded">
                                     {{stop.useDeg === true ? '%' :  (gradient.type === 'conic-gradient' ? 'D' : 'px')}}
                                 </a>
                             </div>
                         </div>
                     </div>
 
-                    <div>
+                    <div class="p-1">
                         <button @click="addStop(gradient)" class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded" title="Add next color stop">+</button>
                     </div>
                 </div>
 
-                <div class="ml-auto flex flex-row">
+                <div class="absolute flex flex-row top-0 right-0 p-1">
 
                     <button @click="moveGradient(index,'up')"
                             class="block text-white font-bold py-1 px-4 rounded mr-1"
