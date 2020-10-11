@@ -1,6 +1,6 @@
 <template>
     <div class="control-item number w-full">
-        <span class="text-gray-700 text-sm font-bold mb-2 block">{{label}}</span>
+        <span v-if="label" class="text-gray-700 text-sm font-bold mb-2 block">{{label}}</span>
         <div class="control">
             <slider-input
                 v-show="hasSlider"
@@ -51,8 +51,7 @@ export default {
     data() {
         return {
             currentValue: toNumber(this.value),
-            minValue: this.min,
-            maxValue: this.max,
+            minValue: toNumber(this.min),
         }
     },
     computed: {
@@ -67,6 +66,9 @@ export default {
                 return (10 ** Math.floor(Math.log(Math.abs(val)) / Math.LN10)) / 10
             }
             return toNumber(this.step)
+        },
+        maxValue() {
+            return toNumber(this.max);
         }
     },
     watch: {

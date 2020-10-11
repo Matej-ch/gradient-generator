@@ -75,10 +75,12 @@
                 </div>
 
                 <div v-else class="flex flex-row justify-start p-1" style="align-items: flex-end;">
-                    <number-input :label="gradient.useDeg === true ? 'Degrees' : 'Turns'"
-                                  :min=0
-                                  :max="gradient.useDeg ? 360 : 1"
-                                  :step="gradient.useDeg ? 1 : 0.01"
+                    <number-input v-if="gradient.useDeg === true" label="Degrees"
+                                  :min=0 :max=360 :step=1
+                                  v-model="gradient.degrees" />
+
+                    <number-input v-else label="Turns"
+                                  :min=0 :max=1 :step=0.01
                                   v-model="gradient.turns" />
                     <div>
                         <a href="#" @click.prevent="gradient.useDeg = !gradient.useDeg;" class="block bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-4 rounded">{{gradient.useDeg === true ? 'T' : 'D'}}</a>
@@ -93,35 +95,29 @@
                                 <input type="color" v-model="stop.color">
                             </div>
 
-                            <div>
+                            <div class="flex items-end">
                                 <label title="Alpha" class="font-bold text-gray-600">A: </label>
-                                <input type="number" v-model="stop.alpha"
-                                       step="0.01" min="0" max="1"
-                                       class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                       style="width: 64px">
+
+                                <number-input :min=0 :max=1 :step=0.01 v-model="stop.alpha" />
                             </div>
                         </div>
 
                         <div class="flex flex-row">
                             <div class="flex flex-col">
-                                <div class="pl-1">
+                                <div class="pl-1 flex items-end">
                                     <label title="Start position" class="font-bold text-gray-600">Sp: </label>
-                                    <input type="number"
-                                           v-model="stop.startPosition"
-                                           step="1" min="0"
-                                           :max="stop.useDeg ? 100 : (gradient.type === 'conic-gradient' ? 360 : windowWidth)"
-                                           class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                           style="width: 64px">
+
+                                    <number-input :min=0 :step=1
+                                                  :max="stop.useDeg ? 100 : (gradient.type === 'conic-gradient' ? 360 : windowWidth)"
+                                                  v-model="stop.startPosition" />
                                 </div>
 
-                                <div class="pl-1">
+                                <div class="pl-1 flex items-end">
                                     <label title="End position" class="font-bold text-gray-600">Ep: </label>
-                                    <input type="number"
-                                           v-model="stop.endPosition"
-                                           step="1" min="0"
-                                           :max="stop.useDeg ? 100 : (gradient.type === 'conic-gradient' ? 360 : windowWidth)"
-                                           class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                           style="width: 64px">
+
+                                    <number-input :min=0 :step=1
+                                                  :max="stop.useDeg ? 100 : (gradient.type === 'conic-gradient' ? 360 : windowWidth)"
+                                                  v-model="stop.endPosition" />
                                 </div>
 
                             </div>
