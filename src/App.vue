@@ -75,16 +75,11 @@
                 </div>
 
                 <div v-else class="flex flex-row justify-start p-1" style="align-items: flex-end;">
-                    <div style="max-width: 100px">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">{{gradient.useDeg === true ? 'Degrees' : 'Turns'}}</label>
-                        <input
-                            type="number"
-                            :step="gradient.turns ? 0.01 : 1"
-                            min=0
-                            :max="gradient.turns ? 1 : 360"
-                            v-model="gradient.turns"
-                            class="shadow appearance-none border rounded w-full py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                    </div>
+                    <number-input :label="gradient.useDeg === true ? 'Degrees' : 'Turns'"
+                                  :min=0
+                                  :max="gradient.useDeg ? 360 : 1"
+                                  :step="gradient.useDeg ? 1 : 0.01"
+                                  v-model="gradient.turns" />
                     <div>
                         <a href="#" @click.prevent="gradient.useDeg = !gradient.useDeg;" class="block bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-4 rounded">{{gradient.useDeg === true ? 'T' : 'D'}}</a>
                     </div>
@@ -244,11 +239,12 @@
 
 import {hexToRgbaMixin} from "@/mixins/hexToRgbaMixin";
 import html2canvas from "html2canvas";
+import NumberInput from "@/components/numberInput";
 
 export default {
     name: 'App',
     mixins: [hexToRgbaMixin],
-    components: {},
+    components: {NumberInput},
     data() {
       return {
           showOverlay:true,
