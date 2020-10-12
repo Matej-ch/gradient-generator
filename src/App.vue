@@ -89,8 +89,8 @@
 
                 <div class="flex flex-row items-end flex-wrap pt-2">
                     <div v-for="(stop,index) in gradient.stops" class="p-1 flex flex-row max-w-sm items-end" :key="`color-${index}`">
-                        <div class="flex flex-col">
-                            <div>
+                        <div class="flex flex-col pl-2">
+                            <div class="pb-2">
                                 <label title="Color" class="font-bold text-gray-600">C: </label>
                                 <input type="color" v-model="stop.color">
                             </div>
@@ -102,9 +102,9 @@
                             </div>
                         </div>
 
-                        <div class="flex flex-row">
+                        <div class="flex flex-row pl-2">
                             <div class="flex flex-col">
-                                <div class="pl-1 flex items-end">
+                                <div class="pl-1 flex items-end pb-1">
                                     <label title="Start position" class="font-bold text-gray-600">Sp: </label>
 
                                     <number-input :min=0 :step=1
@@ -131,7 +131,7 @@
                         </div>
                     </div>
 
-                    <div class="p-1">
+                    <div class="px-2 py-1">
                         <button @click="addStop(gradient)" class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded" title="Add next color stop">+</button>
                     </div>
                 </div>
